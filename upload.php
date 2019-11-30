@@ -14,25 +14,24 @@ if (isset($_FILES)) {
         $fichier_error = $files['error'][$i];
         $fichier_ext = pathinfo($_FILES['fichier']['name'][$i], PATHINFO_EXTENSION);
         // creation des verifications pour chaque fichier
-        if ($_FILES['fichier']['size'][$i] > 1048576)
-        {
+        if ($_FILES['fichier']['size'][$i] > 1048576) {
             $error = "Max size file is 1MO ";
         }
-        if (!in_array($fichier_ext,$allowed))
-        {
+        if (!in_array($fichier_ext, $allowed)) {
             $error = "File must be (jpg) (png) or (gif)";
         }
-        if(!isset($error)){
-            // on génère un nom de fichier à partir du nom de fichier sur le poste du client (mais vous pouvez générer ce nom autrement si vous le souhaitez)
-            $uploadFile = $uploadDir . basename($_FILES['fichier']['name'][$i]);
-            move_uploaded_file($_FILES['fichier']['tmp_name'][$i], $uploadFile);
-            header('location: list.php');
-        }else {
-            echo "Echec de l'upload .$error";
+        if (!isset($error)) {
+            $fichierNewName = uniqid() . '.' . $fichier_ext;
+            $fichierDirection = $uploadDir . $fichierNewName;
+            if (move_uploaded_file($fichier_tmp, $fichierDirection)) {
+                header('location: list.php');
+            } else {
+                echo "Echec de l'upload .$error";
+            }
+        } else {
+            echo $error;
         }
-
     }
-
     // on déplace le fichier temporaire vers le nouvel emplacement sur le serveur. Ca y est, le fichier est uploadé
 
 
